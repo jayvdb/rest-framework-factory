@@ -4,4 +4,4 @@
 
 __author__ = """Steven Walker"""
 __email__ = 'walker@mfgis.com'
-__version__ = '0.1.5'
+__version__ = '0.1.6'
