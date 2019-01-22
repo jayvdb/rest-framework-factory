@@ -11,7 +11,7 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=6.0', ]
+requirements = ['Click>=6.0', 'django', 'djangorestframework']
 
 setup_requirements = ['pytest-runner', ]
 
@@ -39,7 +39,7 @@ setup(
             'rest_framework_factory=rest_framework_factory.cli:main',
         ],
     },
-    install_requires=['django', 'djangorestframework'],
+    install_requires=requirements,
     license="MIT license",
     long_description=readme + '\n\n' + history,
     include_package_data=True,
