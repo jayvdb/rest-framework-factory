@@ -7,7 +7,6 @@ import pytest
 
 from click.testing import CliRunner
 
-from rest_framework_factory import rest_framework_factory
 from rest_framework_factory import cli
 
 
