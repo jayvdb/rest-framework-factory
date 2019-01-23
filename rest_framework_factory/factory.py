@@ -22,7 +22,7 @@ class Factory:
 
     def create_from_scratch(self, model_name=None):
         """Create a new DRF API, model and all. """
-        skel_names = ['imports', 'models', 'serializer', 'filter', 'form', 'viewset', 'router','register']
+        skel_names = ['imports', 'model', 'serializer', 'filter', 'form', 'viewset', 'router', 'register', 'urlpatterns']
         content = self._generate_api_content(model_name=model_name, skel_names=skel_names)
         return content
 
