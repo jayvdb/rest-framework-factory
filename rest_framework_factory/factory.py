@@ -11,10 +11,13 @@ class Factory:
         self._init_skel()
         self._init_api()
 
-    def create_from_scratch(self, model_name=None):
+    def create_from_scratch(self, model_name=None, model_qualified_name=None):
         """Create a new DRF API, model and all. """
         skel_names = ['imports', 'model', 'serializer', 'filter', 'form', 'viewset', 'router', 'register', 'urlpatterns']
-        content = self._generate_api_content(model_name=model_name, skel_names=skel_names)
+        content = self._generate_api_content(
+            model_name=model_name,
+            model_qualified_name=model_qualified_name,
+            skel_names=skel_names)
         return content
 
     def build_from_model(self, app_name=None, model_name=None, self_contained=False, copy_model=False):
@@ -140,7 +143,10 @@ class Factory:
         self.apis['model'] = {}
         self.apis['app'] = {}
         self.apis['test'] = {}
-        self.apis['test']['TestModel'] = self.create_from_scratch(model_name='TestModel')
+        self.apis['test']['TestModel'] = self.create_from_scratch(
+            model_name='TestModel',
+            model_qualified_name='testapp.models.TestModel'
+        )
 
     def _write_to_file(self):
         pass
