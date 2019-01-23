@@ -90,6 +90,7 @@ class Factory:
                     content += f.read().format(model_name=model_name, model_name_lcase=model_name.lower())
             except Exception:
                 print("Error reading skel file {0}".format(skel_file))
+                raise
         return content
 
     def _write_to_file(self):
