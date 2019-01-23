@@ -1,0 +1,5 @@
+class {model_name}ViewSet(ModelViewSet):
+    model = {model_name}
+    renderer_classes = (JSONRenderer, )
+    serializer_class = {model_name}Serializer
+    queryset = {model_name}.objects.all()
