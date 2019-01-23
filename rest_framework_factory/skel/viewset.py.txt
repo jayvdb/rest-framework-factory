@@ -1,4 +1,3 @@
-#Viewset
 class {model_name}ViewSet(ModelViewSet):
     model = {model_name}
     renderer_classes = (JSONRenderer, )

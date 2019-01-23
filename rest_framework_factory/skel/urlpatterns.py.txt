@@ -1,7 +1,5 @@
-#URL patterns
 urlpatterns = [
     url(r'^', include(router.urls))
 ]
-
 
 

@@ -32,7 +32,8 @@ class Factory:
 
         model = self._get_model_or_die(app_name, model_name)  # the model class, itself.
         # we know we have a valid model, for now all we do is build the api string.
-        content = self._generate_api_content(model_name=model_name, skel_names=skel_names)
+        content = '"""{0}\ndrff api for {1}\n{0}"""'.format('='*10, model_name)
+        content += self._generate_api_content(model_name=model_name, skel_names=skel_names)
         api_id = "{0}.{1}".format(app_name, model_name)
         self.apis['model'][api_id] = content
         return content
