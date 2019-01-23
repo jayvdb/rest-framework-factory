@@ -1,5 +1,7 @@
 import os
-skel_dir = os.path.join(os.getcwd(), 'skel')
+from django.conf import settings
+
+skel_dir = os.path.join(os.path.dirname(__file__), 'skel')
 
 class Factory:
     def __init__(self):
@@ -10,17 +12,19 @@ class Factory:
     def create_from_scratch(self, model_name=None):
         """Create a new DRF API, model and all. """
         model_name_lcase = model_name.lower()
-        skel_file = os.path.join(skel_dir, 'api.py.txt')
-        with open(skel_file) as f:
+        skel_file_model = os.path.join(skel_dir, 'models.py.txt')
+        skel_file_api = os.path.join(skel_dir, 'api.py.txt')
+        with open(skel_file_model) as f:
             content = f.read().format(model_name=model_name, model_name_lcase=model_name_lcase)
+        with open(skel_file_api) as f:
+            content += f.read().format(model_name=model_name, model_name_lcase=model_name_lcase)
         return content
 
-
-
-        pass
 
     def build_from_model(self, app_name=None, models=None):
         """Build a DRF API from an existing django model"""
 
 
+    def build_from_app(self, app_name=None):
+        assert app_name in settings.INSTALLED_APPS
 

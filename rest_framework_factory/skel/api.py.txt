@@ -5,21 +5,13 @@ api.py.txt
 """
 
 from django.conf.urls import url, include
-from django.db import models
+
 from rest_framework.renderers import JSONRenderer
 from rest_framework.routers import DefaultRouter
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 
-
-class {model_name}(models.Model):
-    """Automatically Generated Django Model Class named {model_name}"""
-
-
-    class Meta:
-        db_table = {model_name_lcase}
-        app_label = 'django_gpslogger'
 
 
 class {model_name}Serializer(ModelSerializer):
