@@ -5,22 +5,11 @@ from django.apps import apps
 skel_dir = os.path.join(os.path.dirname(__file__), 'skel')
 
 class Factory:
+    """Rest_framework_factory Factory class"""
+
     def __init__(self):
-        self.skel = {}
-        for fn in os.listdir(skel_dir):
-            key = fn.split('.')[0]
-            with open(os.path.join(skel_dir, fn)) as fh:
-                self.skel[key] = fh.read()
-
-
-        self.skel_file_model = os.path.join(skel_dir, 'models.py.txt')
-        self.skel_file_api = os.path.join(skel_dir, 'api.py.txt')
-
-        self.apis_test = {}
-        self.apis_models = {}
-        self.apis_apps = {}
-        self.apis_test['TestModel'] = self.create_from_scratch(model_name='TestModel')
-
+        self._init_skel()
+        self._init_api()
 
     def create_from_scratch(self, model_name=None):
         """Create a new DRF API, model and all. """
@@ -40,8 +29,6 @@ class Factory:
         if copy_model:
             pass
             #TODO: include the model code itself in the api
-
-
 
         model = self._get_model_or_die(app_name, model_name)  # the model class, itself.
         # we know we have a valid model, for now all we do is build the api string.
@@ -126,8 +113,22 @@ class Factory:
         content = ''
         for skel_name in skel_names:
             skel_content = self._read_skel(skel_name)
-            content += skel_content
+            content += skel_content.format(model_name=model_name)
         return content
+
+    def _init_skel(self):
+        self.skel = {}
+        for fn in os.listdir(skel_dir):
+            key = fn.split('.')[0]
+            with open(os.path.join(skel_dir, fn)) as fh:
+                self.skel[key] = fh.read()
+
+    def _init_api(self):
+        self.apis = {}
+        self.apis['model'] = {}
+        self.apis['app'] = {}
+        self.apis['test'] = {}
+        self.apis['test']['TestModel'] = self.create_from_scratch(model_name='TestModel')
 
     def _write_to_file(self):
         pass
