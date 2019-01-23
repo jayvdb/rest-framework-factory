@@ -113,7 +113,7 @@ class Factory:
         content = ''
         for skel_name in skel_names:
             skel_content = self._read_skel(skel_name)
-            content += skel_content.format(model_name=model_name)
+            content += skel_content.format(model_name=model_name, model_name_lcase=model_name.lower())
         return content
 
     def _init_skel(self):
