@@ -35,6 +35,7 @@ class Factory:
 
         app_config = self._get_app_or_die(app_name=app_name)
         model_class = self._get_model_or_die(app_name=app_name, model_name=model_name)
+        model_name = model_class._meta.model_name
         model_qualified_name = app_config.models[model_name]  # ie app0.models.MyModel
 
         # we know we have a valid model, for now all we do is build the api string.
