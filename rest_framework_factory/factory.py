@@ -30,10 +30,14 @@ class Factory:
             pass
             #TODO: include the model code itself in the api
 
-        model = self._get_model_or_die(app_name, model_name)  # the model class, itself.
+        model_cls = self._get_model_or_die(app_name, model_name)  # the model class, itself.
+        model_qualified_name = model_cls._meta.model  # ie app0.models.MyModel
+
         # we know we have a valid model, for now all we do is build the api string.
         content = '#{0}\n#==== drff api for {1} =====\n#{0}\n'.format('='*10, model_name)
-        content += self._generate_api_content(model_name=model_name, skel_names=skel_names)
+        content += self._generate_api_content(
+            model_name=model_name, model_qualified_name=model_qualified_name,  skel_names=skel_names
+            )
         api_id = "{0}.{1}".format(app_name, model_name)
         self.apis['model'][api_id] = content
         return content
@@ -105,15 +109,23 @@ class Factory:
             print("Error reading skel file {0}".format(skel_file))
             raise
 
-    def _generate_api_content(self, model_name=None, skel_names=[]):
+    def _generate_api_content(self,
+                              model_name=None,
+                              model_qualified_name=None,
+                              skel_names=()):
         if not model_name:
             raise ValueError("Model name required")
+        if not model_qualified_name:
+            raise ValueError("Model qualified name required")
         if not skel_names:
             raise ValueError("List of skel files cannot be empty")
         content = ''
         for skel_name in skel_names:
             skel_content = self._read_skel(skel_name)
-            content += skel_content.format(model_name=model_name, model_name_lcase=model_name.lower())
+            content += skel_content.format(
+                model_name=model_name,
+                model_qualified_name=model_qualified_name,
+                model_name_lcase=model_name.lower())
         return content
 
     def _init_skel(self):
