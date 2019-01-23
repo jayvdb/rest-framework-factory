@@ -4,4 +4,4 @@
 
 __author__ = """Steven Walker"""
 __email__ = 'middleforkgis@gmail.com'
-__version__ = '0.1.32'
+__version__ = '0.1.33'
