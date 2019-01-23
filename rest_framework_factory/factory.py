@@ -16,8 +16,10 @@ class Factory:
         self.skel_file_model = os.path.join(skel_dir, 'models.py.txt')
         self.skel_file_api = os.path.join(skel_dir, 'api.py.txt')
 
-        self.apis = {}
-        self.apis['TestModel'] = self.create_from_scratch(model_name='TestModel')
+        self.apis_test = {}
+        self.apis_models = {}
+        self.apis_apps = {}
+        self.apis_test['TestModel'] = self.create_from_scratch(model_name='TestModel')
 
 
     def create_from_scratch(self, model_name=None):
@@ -45,12 +47,21 @@ class Factory:
         # we know we have a valid model, for now all we do is build the api string.
         content = self._generate_api_content(model_name=model_name, skel_names=skel_names)
         api_id = "{0}.{1}".format(app_name, model_name)
-        self.apis[api_id] = content
+        self.apis_models[api_id] = content
+        return content
 
     def build_from_app(self, app_name=None, model_list='__all__'):
-        """Build DRF APIs for all or a subset of the models in a django app"""
+        """Build a DRF API for all or a subset of the models in a django app"""
         app = self._get_app_or_die(app_name)
 
+        content = ''
+        #prliminary content
+        skel_names = ['imports', 'router', ]
+
+        for skel_name in skel_names:
+            content += self._read_skel(skel_name)
+
+        #model content
         if model_list == '__all__':
             models = [x for x in app.get_models()]
         else:
@@ -62,7 +73,14 @@ class Factory:
                     raise ValueError("Model named {0} does not exist".format(m))
         for model in models:
             model_name = model._meta.object_name
-            self.build_from_model(app_name=app_name, model_name=model_name)
+            content += self.build_from_model(app_name=app_name, model_name=model_name)
+
+        #ending content
+        skel_names = ['urlpatterns']
+        for skel_name in skel_names:
+            content += self._read_skel(skel_name)
+        self.apis_apps[app_name] = content
+
 
     def _get_app_or_die(self, app_name=None):
         """Return the app from django.apps.app_configs[app_name] or die trying"""
@@ -87,6 +105,19 @@ class Factory:
             print("Model named {0} not found in app {1}".format(model_name, app_name))
             raise
 
+    def _read_skel(self, skel_name=None):
+        """Read a skel file"""
+        if skel_name is None:
+            raise ValueError("Skel name required")
+
+        skel_file = os.path.join(skel_dir, skel_name + '.py.txt')
+        try:
+            with open(skel_file) as f:
+                return f.read()
+        except Exception:
+            print("Error reading skel file {0}".format(skel_file))
+            raise
+
     def _generate_api_content(self, model_name=None, skel_names=[]):
         if not model_name:
             raise ValueError("Model name required")
@@ -94,13 +125,8 @@ class Factory:
             raise ValueError("List of skel files cannot be empty")
         content = ''
         for skel_name in skel_names:
-            try:
-                skel_file = os.path.join(skel_dir, skel_name + '.py.txt')
-                with open(skel_file) as f:
-                    content += f.read().format(model_name=model_name, model_name_lcase=model_name.lower())
-            except Exception:
-                print("Error reading skel file {0}".format(skel_file))
-                raise
+            skel_content = self._read_skel(skel_name)
+            content += skel_content
         return content
 
     def _write_to_file(self):
