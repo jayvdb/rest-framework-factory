@@ -40,6 +40,8 @@ class Factory:
 
         # we know we have a valid model, for now all we do is build the api string.
         content = '#{0}\n#==== drff api for {1} =====\n#{0}\n'.format('='*10, model_name)
+
+        content += "import {0}.models".format(app_name)
         content += self._generate_api_content(
             model_name=model_name, model_qualified_name=model_qualified_name,  skel_names=skel_names
             )
