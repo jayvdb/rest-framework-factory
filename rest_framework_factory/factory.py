@@ -26,11 +26,21 @@ class Factory:
         content = self._generate_api_content(model_name=model_name, skel_names=skel_names)
         return content
 
-    def build_from_model(self, app_name=None, model_name=None):
+    def build_from_model(self, app_name=None, model_name=None, self_contained=False, copy_model=False):
         """Build a DRF API from an existing django model
         The model name should be given as it appears in models.py ie it should be Upper case
         """
         skel_names = ['serializer', 'filter', 'form', 'viewset', 'register']
+
+        if self_contained:
+            skel_names = ['imports', 'router'] + skel_names + ['urlpatterns', ]
+
+        if copy_model:
+            pass
+            #TODO: include the model code itself in the api
+
+
+
         model = self._get_model_or_die(app_name, model_name)  # the model class, itself.
         # we know we have a valid model, for now all we do is build the api string.
         content = self._generate_api_content(model_name=model_name, skel_names=skel_names)
