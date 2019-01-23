@@ -34,7 +34,7 @@ class Factory:
         # we know we have a valid model, for now all we do is build the api string.
         content = self._generate_api_content(model_name=model_name, skel_names=skel_names)
         api_id = "{0}.{1}".format(app_name, model_name)
-        self.apis_models[api_id] = content
+        self.apis['models'][api_id] = content
         return content
 
     def build_from_app(self, app_name=None, model_list='__all__'):
@@ -66,8 +66,7 @@ class Factory:
         skel_names = ['urlpatterns']
         for skel_name in skel_names:
             content += self._read_skel(skel_name)
-        self.apis_apps[app_name] = content
-
+        self.apis['apps'][app_name] = content
 
     def _get_app_or_die(self, app_name=None):
         """Return the app from django.apps.app_configs[app_name] or die trying"""
