@@ -53,7 +53,7 @@ class Factory:
 
         content = ''
         #prliminary content
-        content += "from {0} import models\n".format(app_name)
+        content += "import{0}.models\n".format(app_name)
         skel_names = ['imports', 'router', ]
 
         for skel_name in skel_names:
