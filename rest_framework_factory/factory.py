@@ -11,16 +11,18 @@ class Factory:
         self._init_skel()
         self._init_api()
 
-    def create_from_scratch(self, model_name=None, model_qualified_name=None):
+    def create_from_scratch(self, model_name=None, model_qualified_name=None, fields=('__all__')):
         """Create a new DRF API, model and all. """
         skel_names = ['imports', 'model', 'serializer', 'filter', 'form', 'viewset', 'router', 'register', 'urlpatterns']
         content = self._generate_api_content(
             model_name=model_name,
             model_qualified_name=model_qualified_name,
-            skel_names=skel_names)
+            skel_names=skel_names,
+            fields=fields
+        )
         return content
 
-    def build_from_model(self, app_name=None, model_name=None, self_contained=False, copy_model=False):
+    def build_from_model(self, app_name=None, model_name=None, self_contained=False, copy_model=False, fields=None):
         """Build a DRF API from an existing django model
         The model name should be given as it appears in models.py ie it should be Upper case
         """
@@ -38,10 +40,16 @@ class Factory:
         model_name = model_class.__name__
         model_qualified_name = "{0}.{1}".format(model_class.__module__, model_class.__name__)  # ie app0.models.MyModel
 
+        if not fields:
+            fields = ('__all__')
+        elif not isinstance(fields, list):
+            print('Error working with model fields')
+            raise Exception
+
         # we know we have a valid model, for now all we do is build the api string.
         content = '#{0}\n#==== drff api for {1} =====\n#{0}\n'.format('='*10, model_name)
         content += self._generate_api_content(
-            model_name=model_name, model_qualified_name=model_qualified_name,  skel_names=skel_names
+            model_name=model_name, model_qualified_name=model_qualified_name,  fields=fields, skel_names=skel_names
             )
         api_id = "{0}.{1}".format(app_name, model_name)
         self.apis['model'][api_id] = content
@@ -61,19 +69,18 @@ class Factory:
 
         #model content
         if not model_req:  # all models, all fields
-            models = {m: {'fields': '__all__'} for m in app.get_models()}
+            model_data = {m: {'fields': '__all__'} for m in app.get_models()}
         elif isinstance(model_req, list):  # listed models, all_fields
-            models = {m: {'fields': '__all__'} for m in model_req}
+            model_data = {m: {'fields': '__all__'} for m in model_req}
         elif isinstance(model_req, dict):
-            models = model_req
+            model_data = model_req
         else:
             print("error identifying models to use")
             raise Exception
 
-        import pdb; pdb.set_trace()
-        for model in models:
-            model_name = model._meta.object_name
-            content += self.build_from_model(app_name=app_name, model_name=model_name)
+        for model_name, model_conf in model_data.items():
+            model_fields = model_conf['fields']
+            content += self.build_from_model(app_name=app_name, model_name=model_name, fields=model_fields)
 
         #ending content
         skel_names = ['urlpatterns']
@@ -120,7 +127,8 @@ class Factory:
     def _generate_api_content(self,
                               model_name=None,
                               model_qualified_name=None,
-                              skel_names=()):
+                              skel_names=(),
+                              fields=('__all')):
         if not model_name:
             raise ValueError("Model name required")
         if not model_qualified_name:
@@ -133,7 +141,9 @@ class Factory:
             content += skel_content.format(
                 model_name=model_name,
                 model_qualified_name=model_qualified_name,
-                model_name_lcase=model_name.lower())
+                model_name_lcase=model_name.lower(),
+                fields=fields
+            )
         return content
 
     def _init_skel(self):
