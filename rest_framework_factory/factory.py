@@ -70,6 +70,7 @@ class Factory:
             print("error identifying models to use")
             raise Exception
 
+        import pdb; pdb.set_trace()
         for model in models:
             model_name = model._meta.object_name
             content += self.build_from_model(app_name=app_name, model_name=model_name)
