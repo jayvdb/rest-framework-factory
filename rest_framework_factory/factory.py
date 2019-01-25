@@ -47,7 +47,7 @@ class Factory:
         self.apis['model'][api_id] = content
         return content
 
-    def build_from_app(self, app_name=None, model_list='__all__'):
+    def build_from_app(self, app_name=None, model_req=None):
         """Build a DRF API for all or a subset of the models in a django app"""
         app = self._get_app_or_die(app_name)
 
@@ -60,15 +60,16 @@ class Factory:
             content += self._read_skel(skel_name)
 
         #model content
-        if model_list == '__all__':
-            models = [x for x in app.get_models()]
+        if not model_req:  # all models, all fields
+            models = {m: {'fields': '__all__'} for m in app.get_models()}
+        elif isinstance(model_req, list):  # listed models, all_fields
+            models = {m: {'fields': '__all__'} for m in model_req}
+        elif isinstance(model_req, dict):
+            models = model_req
         else:
-            models = []
-            for m in model_list:
-                try:
-                    models.append(app.get_model(model_name=m))
-                except LookupError:
-                    raise ValueError("Model named {0} does not exist".format(m))
+            print("error identifying models to use")
+            raise Exception
+
         for model in models:
             model_name = model._meta.object_name
             content += self.build_from_model(app_name=app_name, model_name=model_name)
