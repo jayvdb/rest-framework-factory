@@ -114,10 +114,11 @@ Configuring the factory via YML
 
 * TODO
 
-  *  Initiallize:  Scan all apps, the models therein, and their fields; write structure to file
-    *  Manually edit file, comment out undesired fields and models, change permissions, etc
+  * Initiallize:  Scan all apps, the models therein, and their fields; write structure to file
 
-  *  Implement: Read yml file, generate factory
+    * Manually edit file, comment out undesired fields and models, change permissions, etc
+
+  * Implement: Read yml file, generate factory
 
 Credits
 -------
