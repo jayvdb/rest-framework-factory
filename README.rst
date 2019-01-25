@@ -75,8 +75,8 @@ Basic Usage - Manual Creation
     drff = factory.Factory()
     drff.build_from_app('my_app')
     content = drff.apis['app']['my_app']
-    with open('/tmp/drff_api.py')), 'w') as f:
-        f.write(data)
+    with open('/tmp/drff_api.py', 'w') as f:
+        f.write(content)
 
 * Once the factory file is built, it should be placed into the apps' folder, added to INSTALLED_APPS, and have its urls wired into the project::
 
