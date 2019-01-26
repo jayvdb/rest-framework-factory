@@ -69,9 +69,9 @@ class Factory:
 
         #model content
         if not model_req:  # all models, all fields
-            model_data = {m: {'fields': '__all__'} for m in app.get_models()}
+            model_data = {m: {'fields': ('__all__')} for m in app.get_models()}
         elif isinstance(model_req, list):  # listed models, all_fields
-            model_data = {m: {'fields': '__all__'} for m in model_req}
+            model_data = {m: {'fields': ('__all__')} for m in model_req}
         elif isinstance(model_req, dict):
             model_data = model_req
         else:
