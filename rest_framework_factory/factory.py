@@ -42,7 +42,7 @@ class Factory:
 
         if not fields:
             fields = ('__all__')
-        elif not isinstance(fields, list):
+        elif not (isinstance(fields, list) or isinstance(fields, tuple)):
             print('Error working with model fields')
             raise Exception
 
