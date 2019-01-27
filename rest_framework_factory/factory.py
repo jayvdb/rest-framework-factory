@@ -88,6 +88,28 @@ class Factory:
             content += self._read_skel(skel_name)
         self.apis['app'][app_name] = content
 
+    def _generate_yaml_from_app(self):
+        """
+        Generate YAML markup code from the apps
+        :return:
+        """
+        yaml_content = {'apps': {}}
+        for app_name, app_config in app_configs_include.items():
+            yaml_content['apps'][app_name] = {'models': {}}
+            app_models = app_config.models
+            for model_name, model in app_models.items():
+                model_content = {
+                    'include': 1,
+                    'readonly': 1,
+                    'fields': {f.name: 1 for f in model._meta.fields},
+                }
+                # model_fields = [x.name for x in model._meta.fields]
+                # for f in model_fields:
+                #    model_content['fields'][f] = 1
+                yaml_content['apps'][app_name]['models'][model_name] = model_content
+
+        pass
+
     def _get_app_or_die(self, app_name=None):
         """Return the app from django.apps.app_configs[app_name] or die trying"""
         if app_name is None:
