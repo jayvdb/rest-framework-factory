@@ -11,7 +11,7 @@ class Factory:
         self._init_skel()
         self._init_api()
 
-    def create_from_scratch(self, model_name=None, model_qualified_name=None, fields=('__all__')):
+    def create_from_scratch(self, model_name=None, model_qualified_name=None, fields=('__all__',)):
         """Create a new DRF API, model and all. """
         skel_names = ['imports', 'model', 'serializer', 'filter', 'form', 'viewset', 'router', 'register', 'urlpatterns']
         content = self._generate_api_content(
@@ -41,7 +41,8 @@ class Factory:
         model_qualified_name = "{0}.{1}".format(model_class.__module__, model_class.__name__)  # ie app0.models.MyModel
 
         if not fields:
-            fields = ('__all__')
+            fields = ('__all__',)
+
         elif not (isinstance(fields, list) or isinstance(fields, tuple)):
             print('Error working with model fields')
             raise Exception
@@ -69,9 +70,9 @@ class Factory:
 
         #model content
         if not model_req:  # all models, all fields
-            model_data = {m: {'fields': ('__all__')} for m in app.get_models()}
+            model_data = {m: {'fields': ('__all__',)} for m in app.models.keys()}
         elif isinstance(model_req, list):  # listed models, all_fields
-            model_data = {m: {'fields': ('__all__')} for m in model_req}
+            model_data = {m: {'fields': ('__all__',)} for m in model_req}
         elif isinstance(model_req, dict):
             model_data = model_req
         else:
